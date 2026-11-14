@@ -42,7 +42,7 @@ function setup() {
   let state: MusicState = { track: 0, status: "idle" };
   const playlist = new Playlist(
     media,
-    ["modugno.mp3", "murolo.mp3"],
+    ["modugno.mp3", "murolo.mp3", "pavarotti.mp3"],
     (next) => {
       state = next;
     },
@@ -59,7 +59,7 @@ test("no music before Inizia; one synchronous play call despite repeated starts"
   await flush();
   assert.equal(state().status, "playing");
 });
-test("the same unlocked player advances to Murolo on ended and stops after song two", async () => {
+test("the same unlocked player plays all three songs and loops back to Modugno", async () => {
   const { media, playlist, state } = setup();
   playlist.start();
   await flush();
@@ -69,8 +69,20 @@ test("the same unlocked player advances to Murolo on ended and stops after song 
   await flush();
   assert.deepEqual(state(), { track: 1, status: "playing" });
   media.finish();
-  assert.deepEqual(state(), { track: 1, status: "finished" });
-  assert.equal(media.played.length, 2);
+  await flush();
+  assert.deepEqual(state(), { track: 2, status: "playing" });
+  assert.equal(media.src, "pavarotti.mp3");
+  media.finish();
+  await flush();
+  assert.deepEqual(state(), { track: 0, status: "playing" });
+  assert.equal(media.currentTime, 0);
+  assert.deepEqual(media.played, [
+    "modugno.mp3", "murolo.mp3", "pavarotti.mp3", "modugno.mp3",
+  ]);
+  media.finish();
+  await flush();
+  assert.deepEqual(state(), { track: 1, status: "playing" });
+  assert.equal(media.src, "murolo.mp3");
 });
 test("mute keeps position and applies to the next track; replay cannot overlap or rewind music", async () => {
   const { media, playlist } = setup();

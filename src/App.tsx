@@ -57,9 +57,9 @@ export default function App() {
         preload="metadata"
         aria-label="Musica dell’avventura"
       />
-      {/* Warm the second file while the first plays, without decoding both whole songs into RAM. */}
+      {/* Warm the next song, including the first song when the playlist loops. */}
       <audio
-        src={entered ? soundtrack[1].src : undefined}
+        src={entered ? soundtrack[(music.track + 1) % soundtrack.length].src : undefined}
         preload={entered ? "auto" : "none"}
         aria-hidden="true"
       />
@@ -221,13 +221,11 @@ function Adventure({
         >
           <div className="music-label" aria-live="polite">
             <span>
-              {music.status === "finished"
-                ? "CON AFFETTO"
-                : music.status === "blocked" || music.status === "error"
-                  ? "MUSICA IN PAUSA"
-                  : muted
-                    ? "MUSICA IN SILENZIO"
-                    : "IN ASCOLTO"}
+              {music.status === "blocked" || music.status === "error"
+                ? "MUSICA IN PAUSA"
+                : muted
+                  ? "MUSICA IN SILENZIO"
+                  : "IN ASCOLTO"}
             </span>
             <strong>{soundtrack[music.track].artist}</strong>
             <small>{soundtrack[music.track].title}</small>

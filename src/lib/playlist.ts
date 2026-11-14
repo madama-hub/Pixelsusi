@@ -1,6 +1,6 @@
 export type MusicState = {
   track: number;
-  status: "idle" | "loading" | "playing" | "blocked" | "error" | "finished";
+  status: "idle" | "loading" | "playing" | "blocked" | "error";
 };
 type MusicMedia = Pick<
   HTMLMediaElement,
@@ -16,8 +16,8 @@ type MusicMedia = Pick<
   | "removeEventListener"
 >;
 
-// Keep one playback element for both songs: Safari's user-gesture permission
-// stays with that element when its source changes at the end of the first song.
+// Keep one playback element for every song: Safari's user-gesture permission
+// stays with that element through track changes and playlist loops.
 export class Playlist {
   private media: MusicMedia;
   private sources: readonly string[];
@@ -82,7 +82,7 @@ export class Playlist {
     this.playCurrent();
   }
   resume() {
-    if (!this.started || this.disposed || this.status === "finished") return;
+    if (!this.started || this.disposed) return;
     if (this.status === "error") this.media.src = this.sources[this.track];
     this.playCurrent();
   }
@@ -90,19 +90,8 @@ export class Playlist {
     this.media.muted = muted;
   }
   private onEnded = () => {
-    if (
-      !this.started ||
-      this.disposed ||
-      !this.media.ended ||
-      this.status === "finished"
-    )
-      return;
-    if (this.track + 1 === this.sources.length) {
-      ++this.request;
-      this.update("finished");
-      return;
-    }
-    this.track++;
+    if (!this.started || this.disposed || !this.media.ended) return;
+    this.track = (this.track + 1) % this.sources.length;
     this.status = "loading";
     this.media.src = this.sources[this.track];
     this.playCurrent();

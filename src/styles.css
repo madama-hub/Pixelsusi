@@ -660,13 +660,15 @@ a {
 }
 .under-game {
   display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
   align-items: center;
   justify-content: space-between;
   padding: 25px 0 31px;
   color: #8795ad;
 }
 .under-game > span {
-  font: 8px var(--pixel);
+  font: 12px/1.8 var(--pixel);
   letter-spacing: 0.5px;
   display: flex;
   align-items: center;
@@ -674,7 +676,8 @@ a {
 }
 .under-game .pixel-icon {
   color: #bd8191;
-  font-size: 10px;
+  font-size: 14px;
+  flex-shrink: 0;
 }
 .help-button {
   font-size: 18px;
@@ -1362,7 +1365,7 @@ footer i {
     gap: 10px;
   }
   .under-game > span {
-    font-size: 6px;
+    font-size: 10px;
     letter-spacing: 0;
     gap: 7px;
   }
@@ -1535,7 +1538,7 @@ footer i {
     font-size: 21px;
   }
   .under-game > span {
-    font-size: 5px;
+    font-size: 9px;
   }
   .help-button {
     font-size: 15px;
@@ -1772,8 +1775,8 @@ footer i {
   border-top: 1px solid #64708b44;
   padding-top: 21px;
   margin-top: 28px;
-  font: 7px var(--pixel);
-  color: #8192b2;
+  font: 11px/1.8 var(--pixel);
+  color: #e1e4ed;
 }
 .start-signature .pixel-icon {
   color: #bd8191;
@@ -1829,7 +1832,7 @@ footer i {
     gap: 6px;
   }
   .start-signature {
-    font-size: 6px;
+    font-size: 10px;
   }
   .music-label {
     max-width: 115px;
